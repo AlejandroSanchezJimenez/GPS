@@ -42,25 +42,75 @@ class MensajeRepository extends ServiceEntityRepository
 //    /**
 //     * @return Mensaje[] Returns an array of Mensaje objects
 //     */
-//    public function findByExampleField($value): array
+   public function findByExampleField($value): array
+   {
+       return $this->createQueryBuilder('m')
+           ->andWhere('m.Usuario = :val')
+           ->setParameter('val', $value)
+           ->orderBy('m.id', 'ASC')
+        //    ->setMaxResults(10)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+   public function findforJuez($value): array
+   {
+       return $this->createQueryBuilder('m')
+           ->andWhere('m.Juez = :val')
+           ->setParameter('val', $value)
+        //    ->orderBy('m.id', 'ASC')
+        //    ->setMaxResults(10)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+//    public function validador($value)
 //    {
 //        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
+//            -->update()
+//            ->set('m.Validado', true)
+//            ->andWhere('r.id = :val')
 //            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
 //            ->getQuery()
-//            ->getResult()
+//            ->getSingleScalarResult()
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Mensaje
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        public function Valida($value)
+            {
+                return $this->createQueryBuilder('m')
+                    ->update()
+                    ->set('m.Validado', 1)
+                    ->andWhere('m.id = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getSingleScalarResult()
+                ;
+            }
+
+            public function desValida($value)
+            {
+                return $this->createQueryBuilder('m')
+                    ->update()
+                    ->set('m.Validado', 0)
+                    ->andWhere('m.id = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getSingleScalarResult()
+                ;
+            }
+
+   public function toArray(Mensaje $mensaje) :array
+    {
+        return [
+            $id=$mensaje->getId(),
+            $fecha=$mensaje->getFechaHoraMensaje(),
+            $banda=$mensaje->getBanda(),
+            $modo=$mensaje->getModo(),
+            $usuario=$mensaje->getUsuario(),
+            $validado=$mensaje->isValidado()
+        ];
+    }
 }

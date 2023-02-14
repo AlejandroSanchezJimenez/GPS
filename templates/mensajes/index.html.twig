@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ubicaina
+{% endblock %}
+
+{% block body %}
+	<style>
+		.example-wrapper {
+			margin: 1em auto;
+			max-width: 800px;
+			width: 95%;
+			font: 18px / 1.5 sans-serif;
+		}
+		.example-wrapper code {
+			background: #F5F5F5;
+			padding: 2px 6px;
+		}
+	</style>
+
+	{% if "ROLE_JUEZ" not in app.user.roles %}
+		{{ form_start(form) }}
+		{{ form_label(form.Banda)}}
+		{{ form_widget(form.Banda)}}
+		{{ form_errors(form.Banda)}}
+		<br><br>
+		{{ form_label(form.Modo)}}
+		{{ form_widget(form.Modo)}}
+		{{ form_errors(form.Modo)}}<br><br>
+		{{ form_label(form.Juez)}}
+		{{ form_widget(form.Juez)}}
+		{{ form_errors(form.Juez)}}<br><br>
+		{{ form_label(form.FechaHoraMensaje)}}
+		{{ form_widget(form.FechaHoraMensaje)}}
+		{{ form_errors(form.FechaHoraMensaje)}}<br><br>
+		<button>Enviar mensaje</button>
+		{{ form_end(form) }}
+	{% endif %}
+
+	<h2>MENSAJES<h2>
+	{% if "ROLE_JUEZ" not in app.user.roles %}
+	{% for mensaje in mensajes %}
+		<h4>MENSAJE CON ID {{mensaje.ID}}<h4>
+		<ul>
+			<li>Fecha: {{mensaje.FechaHoraMensaje|date('d-m-Y')}}</li>
+			<li>Modo: {{mensaje.Modo.Identificador}}</li>
+			<li>Banda: {{mensaje.Banda.Distancia}}</li>
+			<li>Usuario: {{mensaje.Usuario.Email}}</li>
+			<li>Juez: {{mensaje.Juez.Email}}</li>
+			<li>Validado: 
+			{% if mensaje.Validado %}
+				Sí
+			{% else %}
+				No
+			{% endif %}
+			</li>
+    		{% if "ROLE_JUEZ" in app.user.roles %}
+				<button><a href={{'/validar?id=' ~ mensaje.ID}}>Validar</a></button>
+			{% endif %}
+		</ul>
+	{% endfor %}
+	{% endif %}
+	{% if "ROLE_JUEZ" in app.user.roles %}
+	{% for mensaje in mensajesjuez %}
+		<h4>MENSAJE CON ID {{mensaje.ID}}<h4>
+		<ul>
+			<li>Fecha: {{mensaje.FechaHoraMensaje|date('d-m-Y')}}</li>
+			<li>Modo: {{mensaje.Modo.Identificador}}</li>
+			<li>Banda: {{mensaje.Banda.Distancia}}</li>
+			<li>Usuario: {{mensaje.Usuario.Email}}</li>
+			<li>Juez: {{mensaje.Juez.Email}}</li>
+			<li>Validado: 
+			{% if mensaje.Validado %}
+				Sí
+			{% else %}
+				No
+			{% endif %}
+			</li>
+    		{% if "ROLE_JUEZ" in app.user.roles %}
+				{% if (mensaje.Validado) %}
+					<button><a href={{'/desvalidar?id=' ~ mensaje.ID}}>Desvalidar</a></button>					
+				{% else %}
+					<button><a href={{'/validar?id=' ~ mensaje.ID}}>Validar</a></button>
+				{% endif %}
+			{% endif %}
+		</ul>
+	{% endfor %}
+	{% endif %}
+{% endblock %}

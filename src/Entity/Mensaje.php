@@ -29,6 +29,13 @@ class Mensaje
     #[ORM\JoinColumn(nullable: false)]
     private ?Modo $Modo = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $Validado = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $Juez = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -78,6 +85,30 @@ class Mensaje
     public function setModo(?Modo $Modo): self
     {
         $this->Modo = $Modo;
+
+        return $this;
+    }
+
+    public function isValidado(): ?bool
+    {
+        return $this->Validado;
+    }
+
+    public function setValidado(?bool $Validado): self
+    {
+        $this->Validado = $Validado;
+
+        return $this;
+    }
+
+    public function getJuez(): ?User
+    {
+        return $this->Juez;
+    }
+
+    public function setJuez(?User $Juez): self
+    {
+        $this->Juez = $Juez;
 
         return $this;
     }
